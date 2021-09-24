@@ -2,7 +2,7 @@
   "name": "test-frontend",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://darrubla.gitlab.io/test-frontend",
+  "homepage": "https://darrubla.github.io/test-frontend",
   "dependencies": {
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^11.2.7",
