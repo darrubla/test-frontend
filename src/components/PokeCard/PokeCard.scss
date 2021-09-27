@@ -1,0 +1,39 @@
+.poke-card {
+  &.container {
+    height: 210px;
+    display: grid;
+    grid-template-rows: 1fr 6fr;
+    background-color: papayawhip;
+    margin: 8px;
+    border-radius: 18px;
+  }
+  &__title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 16px;
+    border-bottom: 1px solid gray;
+  }
+  &__body {
+    display: grid;
+    align-items: center;
+    grid-template-columns: 1fr 4fr;
+    column-gap: 8px;
+    padding: 0 16px;
+    img {
+      width: 100%;
+      background-color: white;
+    }
+    section {
+      display: flex;
+      flex-direction: column;
+      label {
+        background-color: gray;
+        margin: 0 8px;
+      }
+    }
+  }
+  &__types {
+    display: flex;
+  }
+}
