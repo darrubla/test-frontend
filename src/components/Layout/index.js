@@ -22,6 +22,7 @@ export default function Layout({children}) {
       history.push(url[value])
     } else if (parseInt(value) === 2){
       logout()
+      history.push('/')
     }
   }, [value]);
 

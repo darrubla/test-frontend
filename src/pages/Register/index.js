@@ -3,6 +3,7 @@ import { Link, useHistory } from "react-router-dom"
 
 import { auth, registerWithEmailAndPassword } from "../../services/firebase"
 import { useAuthState } from "react-firebase-hooks/auth"
+import { notify } from '../../utils/index'
 
 import "./Register.scss"
 
@@ -20,8 +21,22 @@ function Register() {
     if (user) history.push("/home")
   }, [user, loading])
 
+  const handleSubmit = () => {
+    const regexp = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/g
+    if (password.length < 6) {
+      notify('error', '!Hola, por favor valida que tu contraseña tenga 6 o más carácteres!', 'error_pwd')
+    } else if (!email.match(regexp)) {
+      notify('error', '!Hola, por favor escribe un correo válido!', 'error_pwd')
+    } else if (name.length < 1) {
+      notify('error', '!Hola, por favor escribe tu nombre completo!', 'error_name')
+    } else {
+      registerWithEmailAndPassword(name, email, password)
+    }
+  }
+
   return (
     <div className="register">
+      <h1>Pokemon Test</h1>
       <div className="register__container">
       <input
           type="text"
@@ -46,13 +61,13 @@ function Register() {
         />
         <button
           className="register__btn"
-          onClick={() => registerWithEmailAndPassword(name, email, password)}
+          onClick={() => handleSubmit()}
         >
           Register
         </button>
-        <div>
+        <span>
           Already have an account? <Link to="/">Login</Link> now.
-        </div>
+        </span>
       </div>
     </div>
   )

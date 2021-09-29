@@ -6,6 +6,7 @@ import { db } from '../../services/firebase'
 import { getUrl } from '../../services/pokeAPI'
 import { auth } from "../../services/firebase"
 import { useAuthState } from "react-firebase-hooks/auth"
+import LoaderComponent from '../../components/Loader'
 
 import { Container } from '@mui/material';
 
@@ -60,6 +61,7 @@ export default function Favorites() {
 
   return (
     <Container>
+      <LoaderComponent />
       <section className="home">
         { handleListado() }
       </section>

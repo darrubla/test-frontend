@@ -3,6 +3,7 @@ import { Link, useHistory } from "react-router-dom"
 
 import { auth, signInWithEmailAndPassword, signInWithGoogle } from "../../services/firebase"
 import { useAuthState } from "react-firebase-hooks/auth"
+import { notify } from '../../utils/index'
 
 import "./Login.scss"
 
@@ -19,8 +20,20 @@ function Login() {
     if (user) history.push("/home")
   }, [user, loading])
 
+  const handleSubmit = () => {
+    const regexp = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/g
+    if (password.length < 6) {
+      notify('error', '!Hola, por favor valida que tu contraseña tenga 6 o más carácteres!', 'error_pwd')
+    }else if (!email.match(regexp)) {
+      notify('error', '!Hola, por favor escribe un correo válido!', 'error_pwd')
+    } else {
+      signInWithEmailAndPassword(email, password)
+    }
+  }
+
   return (
     <div className="login">
+      <h1>Pokemon Test</h1>
       <div className="login__container">
         <input
           type="text"
@@ -38,16 +51,16 @@ function Login() {
         />
         <button
           className="login__btn"
-          onClick={() => signInWithEmailAndPassword(email, password)}
+          onClick={() => handleSubmit()}
         >
           Login
         </button>
         <button className="login__btn login__google" onClick={signInWithGoogle}>
           Login with Google
         </button>
-        <div>
+        <span>
           Don't have an account? <Link to="/register">Register</Link> now.
-        </div>
+        </span>
       </div>
     </div>
   )

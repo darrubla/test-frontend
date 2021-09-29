@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react"
 import { Container, Button } from '@mui/material'
 
 import PokeCard from "../../components/PokeCard"
+import LoaderComponent from '../../components/Loader'
 
 import { getListado } from '../../services/pokeAPI'
 import { auth } from "../../services/firebase"
@@ -45,6 +46,7 @@ function Home() {
 
   return (
     <Container>
+      <LoaderComponent />
       <section className="home">
         { user && handleListado()}
       </section>

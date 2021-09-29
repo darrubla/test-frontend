@@ -5,7 +5,7 @@ import { getPokeEntry, getPokeInfo } from '../../services/pokeAPI'
 import IsLogged from "../../utils/IsLogged"
 
 import Icon from '@material-ui/core/Icon';
-import { Button, Container } from '@mui/material';
+import { Container } from '@mui/material';
 
 import './Detail.scss'
 

@@ -10,8 +10,11 @@
     bottom: 0;
     position: fixed;
     .Mui-selected {
-      color: white;
+      color: white !important;
       font-weight: 900;
+    }
+    .MuiButtonBase-root {
+      color: rgba(78, 0, 0, 0.9)
     }
   }
 }
