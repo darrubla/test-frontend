@@ -1,6 +1,8 @@
 import firebase from 'firebase/compat/app'
 import 'firebase/compat/auth'
 import 'firebase/compat/firestore'
+import { notify } from '../utils/index'
+import { doc, setDoc, arrayUnion, arrayRemove, updateDoc  } from "firebase/firestore";
 
 const firebaseConfig = {
   apiKey: "AIzaSyChPfb0-bn7Wgji2NDlJKKvSeD7ZUhuWk0",
@@ -34,17 +36,16 @@ const signInWithGoogle = async () => {
       })
     }
   } catch (err) {
-    console.error(err)
-    // alert(err.message)
+    notify('error', '!Upss el usuario no se ha podido conectar, por favor verifica tus datos!', 'error_adding_favorite')
   }
 }
 
 const signInWithEmailAndPassword = async (email, password) => {
   try {
-    await auth.signInWithEmailAndPassword(email, password)
+    const res = await auth.signInWithEmailAndPassword(email, password)
   } catch (err) {
     console.error(err)
-    // alert(err.message)
+    notify('error', '!Upss el usuario no existe en nuestra base, por favor revisa tus datos!', 'error_auth')
   }
 }
 
@@ -59,10 +60,42 @@ const registerWithEmailAndPassword = async (name, email, password) => {
       email,
     })
   } catch (err) {
-    console.error(err)
-    // alert(err.message)
+    notify('error', '!Upss el usuario no se ha podido crear, por favor verifica tus datos!', 'error_register')
   }
 }
+
+
+const addFavorites = async (id, email) => {
+  try {
+    const docRef = await setDoc(doc(db, "usuarios", email), {
+      favorites: [id]
+    });
+  } catch (e) {
+    notify('error', '!Upss ha ocurrido un error, vuelve a intentarlo más tarde!', 'error_adding_favorite')
+  }
+}
+
+const updateFavorites = async (id, email) => {
+  const document = doc(db, "usuarios", email);
+  try {
+    await updateDoc(document, {
+      favorites: arrayUnion(id)
+    })
+  } catch (e) {
+    notify('error', '!Upss ha ocurrido un error, vuelve a intentarlo más tarde!', 'error_updating_favorite')
+  }
+};
+
+const removeFavorites = async (id, email) => {
+  const document = doc(db, "usuarios", email);
+  try {
+    await updateDoc(document, {
+      favorites: arrayRemove(id)
+    })
+  } catch (e) {
+    notify('error', '!Upss ha ocurrido un error, vuelve a intentarlo más tarde!', 'error_removing_favorite')
+  }
+};
 
 const logout = () => {
   auth.signOut()
@@ -71,6 +104,9 @@ const logout = () => {
 export {
   auth,
   db,
+  updateFavorites,
+  removeFavorites,
+  addFavorites,
   signInWithGoogle,
   signInWithEmailAndPassword,
   registerWithEmailAndPassword,

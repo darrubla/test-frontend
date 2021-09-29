@@ -6,6 +6,7 @@
     background-color: papayawhip;
     margin: 8px;
     border-radius: 18px;
+    text-decoration: none;
   }
   &__title {
     display: flex;
@@ -13,27 +14,40 @@
     align-items: center;
     padding: 0 16px;
     border-bottom: 1px solid gray;
-  }
-  &__body {
-    display: grid;
-    align-items: center;
-    grid-template-columns: 1fr 4fr;
-    column-gap: 8px;
-    padding: 0 16px;
-    img {
-      width: 100%;
-      background-color: white;
+    h5 {
+      color: black;
+      font-weight: 900;
+      margin: 16px 0 16px 8px;
     }
-    section {
-      display: flex;
-      flex-direction: column;
-      label {
-        background-color: gray;
-        margin: 0 8px;
+    button {
+      height: 24px;
+      min-width: 24px !important;
+      width: 24px !important;
+      span {
+        color: red !important;
       }
     }
   }
-  &__types {
-    display: flex;
+  &__body {
+    display: grid;
+    place-items: center;
+    padding: 0 16px;
+    img {
+      width: 70%;
+      background-color: white;
+    }
+  }
+}
+
+@media (max-width: 425px) {
+  .poke-card {
+    &.container {
+      height: 310px;
+    }
+    &__body {
+      img {
+        width: 70%;
+      }
+    }
   }
 }

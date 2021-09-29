@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react"
 import { Link, useHistory } from "react-router-dom"
+
 import { auth, signInWithEmailAndPassword, signInWithGoogle } from "../../services/firebase"
 import { useAuthState } from "react-firebase-hooks/auth"
 
@@ -10,13 +11,14 @@ function Login() {
   const [password, setPassword] = useState("")
   const [user, loading, error] = useAuthState(auth)
   const history = useHistory()
+
   useEffect(() => {
     if (loading) {
-      // maybe trigger a loading screen
       return
     }
-    if (user) history.replace("/home")
+    if (user) history.push("/home")
   }, [user, loading])
+
   return (
     <div className="login">
       <div className="login__container">
@@ -43,9 +45,6 @@ function Login() {
         <button className="login__btn login__google" onClick={signInWithGoogle}>
           Login with Google
         </button>
-        <div>
-          <Link to="/reset">Forgot Password</Link>
-        </div>
         <div>
           Don't have an account? <Link to="/register">Register</Link> now.
         </div>

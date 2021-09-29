@@ -1,13 +1,33 @@
 import React, { useState, useEffect } from 'react'
+import PropTypes from 'prop-types'
 
-import { getPokeEntry, getPokeInfo } from '../../services/pokeAPI'
+import { Link } from 'react-router-dom'
+
+import { addFavorites, updateFavorites, removeFavorites, db } from '../../services/firebase'
+import { getPokeInfo } from '../../services/pokeAPI'
+import Icon from '@material-ui/core/Icon';
+import { Button } from '@mui/material';
 
 import './PokeCard.scss'
 
 export default function PokeCard(props) {
-  const { url } = props
+  const { url, user } = props
   const [pokemon, setPokemon] = useState(null)
-  const [entry, setEntry] = useState(null)
+  const [docListener, setDocListener] = useState(0)
+  const [favoritesList, setFavoritesList] = useState(0)
+  const [isFavorite, setIsFavorite] = useState(false)
+  useEffect(() => {
+    const unsubscribe = db
+      .collection("usuarios")
+      .onSnapshot((snapshot) => {
+        const data = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        const list = data.filter(item => item.id === user)
+        list !== docListener && setDocListener(list[0]);
+      });
+  }, [pokemon])
 
   useEffect(() => {
     if (!pokemon) {
@@ -18,46 +38,63 @@ export default function PokeCard(props) {
   }, [])
 
   useEffect(() => {
-    if(pokemon && !entry) {
-      const info = getPokeEntry(pokemon.id)
-      info
-      .then(res => setEntry(res.data.flavor_text_entries))
+    if (pokemon && docListener) {
+      setFavoritesList(docListener.favorites)
     }
-  }, [pokemon])
+  }, [docListener])
 
-  const showTypes = () => (
-    pokemon.types.map((type, idx )=> <label key={`${type.type.name}-${idx}`}>{type.type.name}</label>)
-  )
+  useEffect(() => {
+    if (favoritesList) {
+      favoritesList.includes(pokemon.id) ? setIsFavorite(true) : setIsFavorite(false)
+    }
+  }, [docListener, favoritesList])
+
+  const handleClick = (e) => {
+    e.preventDefault()
+    setIsFavorite(!isFavorite)
+    if (!isFavorite) {
+      if (docListener !== 0) {
+        if (typeof (docListener) === 'object') {
+          return updateFavorites(pokemon.id, user)
+        }
+        return addFavorites(pokemon.id, user)
+      }
+    }else {
+      return removeFavorites(pokemon.id, user)
+    }
+  }
 
   const handlePokeInfo = () => {
     if (pokemon) {
       const { name, id } = pokemon
       return (
-        <article className="poke-card container">
+        <Link
+          className="poke-card container"
+          to={{
+          pathname: `/pokemon/${name}`,
+          state: {pokemon, isFavorite}
+          }}>
           <div className="poke-card__title">
-            <p>#{id} - {name}</p>
-            <span>
-              favorito Icon
-            </span>
+            <h5>#{id} - {name}</h5>
+            <Button
+              name={id}
+              onClick={(e) => {handleClick(e)}}
+            >
+              <Icon name={id}>{isFavorite ? 'favorite' : 'favorite_border'}</Icon>
+            </Button>
           </div>
           <div className="poke-card__body">
             <img src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png`} alt={`logo pokemon #${id}`} />
-            <section>
-              <div className="poke-card__types">
-                {showTypes()}
-              </div>
-              <h5>
-                {entry
-                  ? entry[3].flavor_text
-                  : null
-                }
-              </h5>
-            </section>
           </div>
-        </article>
+        </Link>
       )
     }
     return null
   }
   return handlePokeInfo()
+}
+
+PokeCard.propTypes = {
+  url: PropTypes.string,
+  user: PropTypes.object,
 }
